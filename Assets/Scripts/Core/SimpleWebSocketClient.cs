@@ -17,6 +17,9 @@ public class SimpleWebSocketClient : MonoBehaviour
     public delegate void MessageTriggerClient(string msg);
     public static event MessageTriggerClient onTriggered;
 
+    public delegate void MessageReceived(object sender, MessageEventArgs e);
+    public static event MessageReceived onMessageReceived;
+
     [Button]
     public void StartListening()
     {
@@ -83,6 +86,7 @@ public class SimpleWebSocketClient : MonoBehaviour
 #endif
         msgToReceive = e.Data.ToString();
         onTriggered.Invoke(msgToReceive);
+        onMessageReceived.Invoke(sender, e);
     }
 
 
