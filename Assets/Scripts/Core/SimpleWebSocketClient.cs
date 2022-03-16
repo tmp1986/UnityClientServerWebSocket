@@ -10,13 +10,9 @@ public class SimpleWebSocketClient : MonoBehaviour
     private static string staticConnectionAddress = @"ws://192.168.2.19:3333";
 
     public string address = staticConnectionAddress;
-    public string msgToSend = "Hello from Client";
+    private string msgToSend = "Hello from Client";
     public string msgToReceive = "";
-    WebSocket ws = new WebSocket(staticConnectionAddress + "/Echo");
-
-    public delegate void MessageTriggerClient(string msg);
-    public static event MessageTriggerClient onTriggered;
-
+    private WebSocket ws;
     public delegate void MessageReceived(object sender, MessageEventArgs e);
     public static event MessageReceived onMessageReceived;
 
@@ -24,15 +20,17 @@ public class SimpleWebSocketClient : MonoBehaviour
     public void StartListening()
     {
         staticConnectionAddress = address;
+
+        ws = new WebSocket(staticConnectionAddress + "/Echo");
+        staticConnectionAddress = address;
         ws.OnMessage += Ws_OnMessage;
         ws.OnOpen += Ws_OnOpen;
         try
         {
-            ws.Connect();
-
 #if UNITY_EDITOR
-            Debug.Log("Trying to connect...");
+            Debug.Log("Trying to connect to: " + staticConnectionAddress.ToString());
 #endif
+            ws.Connect();
         }
         catch (Exception e)
         {
@@ -54,7 +52,7 @@ public class SimpleWebSocketClient : MonoBehaviour
     private void Ws_OnOpen(object sender, EventArgs e)
     {
 #if UNITY_EDITOR
-        Debug.Log("Connected");
+        Debug.Log("Connected to:" + staticConnectionAddress.ToString());
 #endif
     }
 
@@ -85,7 +83,6 @@ public class SimpleWebSocketClient : MonoBehaviour
         Debug.Log("received from server: " + e.Data.ToString());
 #endif
         msgToReceive = e.Data.ToString();
-        onTriggered.Invoke(msgToReceive);
         onMessageReceived.Invoke(sender, e);
     }
 

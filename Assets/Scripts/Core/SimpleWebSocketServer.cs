@@ -41,7 +41,7 @@ public class SimpleWebSocketServer : MonoBehaviour
     public string address = staticAddress;
     [SerializeField]
     private bool runServerOnStart = false;
-    private WebSocketServer wssv = new WebSocketServer(staticAddress);
+    private WebSocketServer wssv;
 
     public string msgToReceive { get; set; }
     public string msgToSend = "Hello from Server";
@@ -50,6 +50,8 @@ public class SimpleWebSocketServer : MonoBehaviour
     private void Start()
     {
         staticAddress = address;
+
+        wssv = new WebSocketServer(staticAddress);
         wssv.AddWebSocketService<Echo>("/Echo");
         //Echo.onTriggered += Current_onMessageTrigger;
 
